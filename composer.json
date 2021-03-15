@@ -1,0 +1,19 @@
+{
+  "name"       : "infira/poesis",
+  "description": "Autoloading PHP classes",
+  "license"    : "MIT",
+  "authors"    : [
+	{
+	  "name" : "Gen Taliaru",
+	  "email": "gen@infira.ee"
+	}
+  ],
+  "autoload"   : {
+	"psr-4": {
+	  "Infira\\Autoloader\\Autoloader\\": "src/modelGenerator"
+	}
+  },
+  "require"    : {
+	"infira/utils": "1.*"
+  }
+}
