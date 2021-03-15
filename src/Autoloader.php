@@ -15,19 +15,21 @@ class Autoloader
 	private static $maxLen             = 0;
 	
 	
-	public static function init(string $classLocationFilePath): bool
+	public static function init(string $classLocationFilePath = null): bool
 	{
 		if (self::$isInited)
 		{
 			return true;
 		}
 		self::$isInited = true;
-		if (!file_exists($classLocationFilePath))
+		if ($classLocationFilePath !== null)
 		{
-			self::error($classLocationFilePath . " does not exists");
+			if (!file_exists($classLocationFilePath))
+			{
+				self::error($classLocationFilePath . " does not exists");
+			}
+			require_once $classLocationFilePath;
 		}
-		require_once $classLocationFilePath;
-		
 		spl_autoload_register(function ($class)
 		{
 			if (in_array($class, ["Memcached", "Memcache"]))
