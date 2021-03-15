@@ -1,5 +1,5 @@
 {
-  "name"       : "infira/poesis",
+  "name"       : "infira/autoloader",
   "description": "Autoloading PHP classes",
   "license"    : "MIT",
   "authors"    : [
