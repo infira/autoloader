@@ -117,18 +117,23 @@ class Autoloader
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
 		
-		foreach ($config['scan'] as $item)
+		if (isset($config['classMap']))
 		{
-			if (!is_dir($item->path))
+			foreach ($config['scan'] as $item)
 			{
-				self::error($item->path . ' is not a dir');
+				if (!is_dir($item->path))
+				{
+					self::error($item->path . ' is not a dir');
+				}
+				self::collectPath($item->path, $item->recursive);
 			}
-			self::collectPath($item->path, $item->recursive);
 		}
-		
-		foreach ($config['classMap'] as $class => $path)
+		if (isset($config['classMap']))
 		{
-			self::collect($class, $addPathPrefix . $path);
+			foreach ($config['classMap'] as $class => $path)
+			{
+				self::collect($class, $addPathPrefix . $path);
+			}
 		}
 	}
 	
