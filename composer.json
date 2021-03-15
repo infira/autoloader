@@ -10,7 +10,7 @@
   ],
   "autoload"         : {
 	"psr-4": {
-	  "Infira\\Autoloader\\Autoloader\\": "src/modelGenerator"
+	  "Infira\\Autoloader\\Autoloader\\": "src/"
 	}
   },
   "minimum-stability": "dev",
