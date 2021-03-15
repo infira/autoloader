@@ -117,7 +117,7 @@ class Autoloader
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
 		
-		if (isset($config['classMap']))
+		if (isset($config['scan']))
 		{
 			foreach ($config['scan'] as $item)
 			{
