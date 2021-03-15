@@ -1,19 +1,20 @@
 {
-  "name"       : "infira/autoloader",
-  "description": "Autoloading PHP classes",
-  "license"    : "MIT",
-  "authors"    : [
+  "name"             : "infira/autoloader",
+  "description"      : "Autoloading PHP classes",
+  "license"          : "MIT",
+  "authors"          : [
 	{
 	  "name" : "Gen Taliaru",
 	  "email": "gen@infira.ee"
 	}
   ],
-  "autoload"   : {
+  "autoload"         : {
 	"psr-4": {
 	  "Infira\\Autoloader\\Autoloader\\": "src/modelGenerator"
 	}
   },
-  "require"    : {
+  "minimum-stability": "dev",
+  "require"          : {
 	"infira/utils": "1.*"
   }
 }
