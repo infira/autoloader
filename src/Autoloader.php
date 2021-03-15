@@ -80,17 +80,21 @@ class Autoloader
 		self::$locations[$class] = $classFileLocation;
 	}
 	
-	public static function generateCache(string $jsonFile, string $installLocation)
+	public static function generateCache(array $conifgFiles, string $installLocation)
 	{
 		$cw = getcwd() . '/';
-		if (!file_exists($jsonFile))
+		
+		foreach ($conifgFiles as $jsonFile)
 		{
-			self::error("Config file not found");
+			if (is_array($jsonFile))
+			{
+				self::loadFromJson($jsonFile[0], $jsonFile[1]);
+			}
+			else
+			{
+				self::loadFromJson($jsonFile);
+			}
 		}
-		
-		self::loadFromJson(__DIR__ . '/config/autoloader.json', str_replace($cw, '', __DIR__) . '/');
-		self::loadFromJson($jsonFile);
-		
 		$lines = ['<?php'];
 		
 		foreach (self::$collectedFiles as $row)
@@ -106,6 +110,10 @@ class Autoloader
 	
 	private static function loadFromJson(string $jsonFile, string $addPathPrefix = '')
 	{
+		if (!file_exists($jsonFile))
+		{
+			self::error("Config file \"$jsonFile\" not found");
+		}
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
 		
@@ -128,7 +136,7 @@ class Autoloader
 	{
 		if (!file_exists($file))
 		{
-			self::error('Autoloader file not found:' . $file);
+			self::error('Autoloader  "' . $name . ':" file not found:' . $file);
 		}
 		if (!isset(self::$allCollectedFiles[$file]))
 		{
