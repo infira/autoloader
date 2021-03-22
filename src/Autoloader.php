@@ -99,13 +99,18 @@ class Autoloader
 		
 		foreach (self::$collectedFiles as $row)
 		{
-			$lines[] = str_replace('[SPACES]', str_repeat(' ', self::$maxLen - $row->len), $row->str);
+			$line    = str_replace('[SPACES]', str_repeat(' ', self::$maxLen - $row->len), $row->str);
+			$lines[] = $line;
+			if (self::$updateFromConsole)
+			{
+				echo $line . "\n";
+			}
 		}
 		$lines[] = '?>';
 		
 		file_put_contents($installLocation, trim(join("\n", $lines)));
 		
-		return array_keys(self::$allCollectedFiles);
+		return array_flip(self::$allCollectedFiles);
 	}
 	
 	private static function loadFromJson(string $jsonFile, string $addPathPrefix = '')
@@ -117,7 +122,6 @@ class Autoloader
 		
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
-		
 		if (isset($config['scan']))
 		{
 			foreach ($config['scan'] as $item)
@@ -155,11 +159,7 @@ class Autoloader
 			$line->str                      = $lineStart . '[SPACES] = \'' . $file . '\';';
 			$line->len                      = $len;
 			self::$collectedFiles[$name]    = $line;
-			self::$allCollectedFiles[$file] = true;
-			if (self::$updateFromConsole)
-			{
-				echo $file . "\n";
-			}
+			self::$allCollectedFiles[$file] = $name;
 		}
 	}
 	
