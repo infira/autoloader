@@ -80,7 +80,7 @@ class Autoloader
 		self::$locations[$class] = $classFileLocation;
 	}
 	
-	public static function generateCache(array $conifgFiles, string $installLocation)
+	public static function generateCache(array $conifgFiles, string $installLocation): array
 	{
 		$cw = getcwd() . '/';
 		
@@ -105,7 +105,7 @@ class Autoloader
 		
 		file_put_contents($installLocation, trim(join("\n", $lines)));
 		
-		return dump(self::$collectedFiles);
+		return array_keys(self::$allCollectedFiles);
 	}
 	
 	private static function loadFromJson(string $jsonFile, string $addPathPrefix = '')
@@ -114,6 +114,7 @@ class Autoloader
 		{
 			self::error("Config file \"$jsonFile\" not found");
 		}
+		
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
 		
@@ -155,6 +156,10 @@ class Autoloader
 			$line->len                      = $len;
 			self::$collectedFiles[$name]    = $line;
 			self::$allCollectedFiles[$file] = true;
+			if (self::$updateFromConsole)
+			{
+				echo $file . "\n";
+			}
 		}
 	}
 	
@@ -185,6 +190,12 @@ class Autoloader
 					{
 						$matches = [];
 						preg_match_all('/^class ([[A-Za-z0-9_]+)/m', $src, $matches);
+						self::collect($matches[1][0], $file);
+					}
+					elseif (Regex::isMatch('/^abstract class ([[A-Za-z0-9_]+)/m', $src))
+					{
+						$matches = [];
+						preg_match_all('/^abstract class ([[A-Za-z0-9_]+)/m', $src, $matches);
 						self::collect($matches[1][0], $file);
 					}
 					elseif (Regex::isMatch('/^trait ([[A-Za-z0-9_]+)/m', $src))
