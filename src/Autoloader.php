@@ -11,6 +11,7 @@ class Autoloader
 	private static $isInited           = false;
 	private static $collectedFiles     = [];
 	private static $allCollectedFiles  = [];
+	private static $output             = [];
 	public static  $updateFromConsole  = false;
 	private static $maxLen             = 0;
 	
@@ -99,18 +100,13 @@ class Autoloader
 		
 		foreach (self::$collectedFiles as $row)
 		{
-			$line    = str_replace('[SPACES]', str_repeat(' ', self::$maxLen - $row->len), $row->str);
-			$lines[] = $line;
-			if (self::$updateFromConsole)
-			{
-				echo $line . "\n";
-			}
+			$lines[] = str_replace('[SPACES]', str_repeat(' ', self::$maxLen - $row->len), $row->str);
 		}
 		$lines[] = '?>';
 		
 		file_put_contents($installLocation, trim(join("\n", $lines)));
 		
-		return array_flip(self::$allCollectedFiles);
+		return self::$output;
 	}
 	
 	private static function loadFromJson(string $jsonFile, string $addPathPrefix = '')
@@ -122,6 +118,7 @@ class Autoloader
 		
 		$config             = (array)json_decode(file_get_contents($jsonFile));
 		$config['classMap'] = (array)$config['classMap'];
+		
 		if (isset($config['scan']))
 		{
 			foreach ($config['scan'] as $item)
@@ -159,7 +156,8 @@ class Autoloader
 			$line->str                      = $lineStart . '[SPACES] = \'' . $file . '\';';
 			$line->len                      = $len;
 			self::$collectedFiles[$name]    = $line;
-			self::$allCollectedFiles[$file] = $name;
+			self::$allCollectedFiles[$file] = true;
+			self::$output[$name]            = $file;
 		}
 	}
 	
@@ -243,7 +241,7 @@ class Autoloader
 	{
 		if (self::$updateFromConsole)
 		{
-			echo('CONSOLE_ERROR:' . $msg . "\n");
+			self::$output[] = 'CONSOLE_ERROR:' . $msg;
 		}
 		else
 		{
