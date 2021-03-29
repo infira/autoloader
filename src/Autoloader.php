@@ -147,6 +147,7 @@ class Autoloader
 		}
 		if (!isset(self::$allCollectedFiles[$file]))
 		{
+			$file                           = str_replace(getcwd() . '/', '', $file);
 			$name                           = explodeAt('.', basename($name), 0);
 			$lineStart                      = 'self::$locations[\'' . $name . '\']';
 			$len                            = strlen($lineStart);
